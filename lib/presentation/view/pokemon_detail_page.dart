@@ -220,17 +220,17 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Low: ${_pokemon.tcgplayer?.prices.holofoil?.low}',
+          'Low: ${_pokemon.tcgplayer?.prices?.holofoil?.low}',
           style: context.textTheme.bodyMedium,
         ),
         const SizedBox(height: 4),
         Text(
-          'Mid: ${_pokemon.tcgplayer?.prices.holofoil?.mid}',
+          'Mid: ${_pokemon.tcgplayer?.prices?.holofoil?.mid}',
           style: context.textTheme.bodyMedium,
         ),
         const SizedBox(height: 4),
         Text(
-          'High: ${_pokemon.tcgplayer?.prices.holofoil?.high}',
+          'High: ${_pokemon.tcgplayer?.prices?.holofoil?.high}',
           style: context.textTheme.bodyMedium,
         ),
         const SizedBox(height: 12),
@@ -241,12 +241,12 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Average sell price: ${_pokemon.cardmarket.averageSellPrice}',
+          'Average sell price: ${_pokemon.cardmarket?.averageSellPrice}',
           style: context.textTheme.bodyMedium,
         ),
         const SizedBox(height: 4),
         Text(
-          'Trend price: ${_pokemon.cardmarket.trendPrice}',
+          'Trend price: ${_pokemon.cardmarket?.trendPrice}',
           style: context.textTheme.bodyMedium,
         ),
       ],
@@ -254,6 +254,15 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   }
 
   PreferredSizeWidget _appBar() {
-    return AppBarWidget(title: _pokemon.name);
+    return AppBarWidget(
+      title: Text(
+        _pokemon.name,
+        style: context.textTheme.titleLarge!.copyWith(
+          color: Colors.black,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
   }
 }

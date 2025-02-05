@@ -10,6 +10,7 @@ import 'package:pokemon/presentation/view_models/pokemon_list_page_view_model.da
 
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/app_bar.dart';
+import '../../core/utils/error_widget.dart';
 import '../../core/utils/status_widget.dart';
 import '../../localization/locale_keys.dart';
 
@@ -24,9 +25,10 @@ class _PokemonListPageState extends State<PokemonListPage> {
   final PokemonListPageViewModel _viewModel = PokemonListPageViewModel();
   final _scrollController = ScrollController();
   int _page = 1;
+  String? _query;
 
   void _getPokemonList() {
-    _viewModel.getPokemonList(_page);
+    _viewModel.getPokemonList(_page, _query);
   }
 
   void _scrollListener() {
@@ -53,6 +55,9 @@ class _PokemonListPageState extends State<PokemonListPage> {
       body: Obx(() {
         switch (_viewModel.requestStatus.value) {
           case ApiStatus.success:
+            if (_viewModel.pokemonList.list.isEmpty) {
+              return const CustomErrorWidget(error: 'No results');
+            }
             return _rootUI(_viewModel.pokemonList);
 
           default:
@@ -141,7 +146,93 @@ class _PokemonListPageState extends State<PokemonListPage> {
 
   PreferredSizeWidget _appbar() {
     return AppBarWidget(
-      title: Localized.pokemon.tr,
+      title: Obx(() {
+        return _viewModel.showAppSearchField.value
+            ? _appBarTextField()
+            : _appBarTitle();
+      }),
+      actions: [
+        Obx(() {
+          if (_viewModel.showAppSearchField.value) {
+            return GestureDetector(
+              onTap: () {
+                _page = 1;
+                _query = null;
+                _getPokemonList();
+                _viewModel.changeAppSearchFieldVisibility(false);
+              },
+              child: const Icon(
+                Icons.close,
+                size: 20,
+                color: Colors.black54,
+              ),
+            );
+          } else {
+            return GestureDetector(
+              onTap: () {
+                _viewModel.changeAppSearchFieldVisibility(true);
+              },
+              child: const Icon(
+                Icons.search,
+                size: 20,
+                color: Colors.black54,
+              ),
+            );
+          }
+        }),
+        const SizedBox(width: 12),
+      ],
+    );
+  }
+
+  Widget _appBarTextField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: SizedBox(
+        height: 36,
+        child: TextField(
+          autofocus: true,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            prefixIcon: const Icon(
+              Icons.search,
+              color: Colors.black54,
+              size: 20,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            isDense: false,
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onSubmitted: (String text) {
+            _page = 1;
+            _query = text;
+            _getPokemonList();
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _appBarTitle() {
+    return Text(
+      Localized.pokemon.tr,
+      style: context.textTheme.titleLarge!.copyWith(
+        color: Colors.black,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

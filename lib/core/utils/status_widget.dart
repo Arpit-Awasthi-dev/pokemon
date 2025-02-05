@@ -19,6 +19,7 @@ class StatusWidget extends StatelessWidget {
     switch (status) {
       case ApiStatus.loading:
         return const CustomLoader();
+
       case ApiStatus.error:
         return CustomErrorWidget(error: error);
 

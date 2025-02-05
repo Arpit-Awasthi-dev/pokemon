@@ -4,7 +4,7 @@ class Pokemon {
   final String name;
   final String supertype;
   final List<String> subtypes;
-  final String hp;
+  final String? hp;
   final List<String> types;
   final String? evolvesFrom;
   final List<Attack> attacks;
@@ -21,7 +21,7 @@ class Pokemon {
   final Legalities legalities;
   final CardImages images;
   final MarketData? tcgplayer;
-  final CardMarket cardmarket;
+  final CardMarket? cardmarket;
 
   Pokemon({
     required this.id,
@@ -55,10 +55,11 @@ class Pokemon {
       supertype: json['supertype'],
       subtypes: List<String>.from(json['subtypes']),
       hp: json['hp'],
-      types: List<String>.from(json['types']),
+      types: json['types'] != null ? List<String>.from(json['types']) : [],
       evolvesFrom: json['evolvesFrom'],
-      attacks:
-          List<Attack>.from(json['attacks'].map((x) => Attack.fromJson(x))),
+      attacks: json['attacks'] != null
+          ? List<Attack>.from(json['attacks'].map((x) => Attack.fromJson(x)))
+          : [],
       weaknesses: json['weaknesses'] != null
           ? List<Weakness>.from(
               json['weaknesses'].map((x) => Weakness.fromJson(x)))
@@ -84,7 +85,9 @@ class Pokemon {
       tcgplayer: json['tcgplayer'] != null
           ? MarketData.fromJson(json['tcgplayer'])
           : null,
-      cardmarket: CardMarket.fromJson(json['cardmarket']),
+      cardmarket: json['cardmarket'] != null
+          ? CardMarket.fromJson(json['cardmarket'])
+          : null,
     );
   }
 }
@@ -213,7 +216,7 @@ class CardImages {
 class MarketData {
   final String url;
   final String updatedAt;
-  final Prices prices;
+  final Prices? prices;
 
   MarketData(
       {required this.url, required this.updatedAt, required this.prices});
@@ -222,7 +225,7 @@ class MarketData {
     return MarketData(
       url: json['url'],
       updatedAt: json['updatedAt'],
-      prices: Prices.fromJson(json['prices']),
+      prices: json['prices'] != null ? Prices.fromJson(json['prices']) : null,
     );
   }
 }

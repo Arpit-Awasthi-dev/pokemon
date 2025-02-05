@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pokemon/core/theme/app_colors.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final Widget? leading;
+  final Widget title;
   final List<Widget> actions;
 
   const AppBarWidget({
     required this.title,
-    this.leading,
     this.actions = const [],
     super.key,
   }) : preferredSize = const Size.fromHeight(kToolbarHeight);
@@ -20,24 +17,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: true,
       backgroundColor: AppColors.appColor,
-      title: _title(context),
-      leading: leading,
+      title: title,
       actions: actions,
       titleSpacing: 0,
-    );
-  }
-
-  Widget _title(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Text(
-        title,
-        style: context.textTheme.titleLarge!.copyWith(
-          color: Colors.black,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
     );
   }
 

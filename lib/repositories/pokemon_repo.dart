@@ -6,10 +6,11 @@ import '../core/network/api_services.dart';
 class PokemonRepo {
   final _apiServices = ApiServices();
 
-  Future<PokemonList> getPokemonList(int page) async {
+  Future<PokemonList> getPokemonList(int page, String? query) async {
     var requestParams = {
-      'page': page.toString(),
-      'pageSize': '10',
+      if (query == null) 'page': page.toString(),
+      if (query == null) 'pageSize': '10',
+      if (query != null) 'q': 'set.name:$query'
     };
 
     final response =

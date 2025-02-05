@@ -10,6 +10,7 @@ class PokemonListPageViewModel extends GetxController
     with ViewModelStatus, ViewModelErrors {
   final _repository = PokemonRepo();
   final _pokemonList = PokemonList();
+  var showAppSearchField = false.obs;
 
   PokemonList get pokemonList => _pokemonList;
 
@@ -18,15 +19,26 @@ class PokemonListPageViewModel extends GetxController
     _pokemonList.hasNextPage = value.hasNextPage;
   }
 
-  void getPokemonList(int page) {
+  void getPokemonList(int page, String? query) {
     try {
-      _repository.getPokemonList(page).then((success) {
+      if(page == 1) {
+        _pokemonList.list.clear();
+        setStatus(ApiStatus.loading);
+      }
+      _repository.getPokemonList(page, query).then((success) {
         setStatus(ApiStatus.success);
         _setPokemonList(success);
+      }).onError((error, stackTrace){
+        setError(error.toString());
+        setStatus(ApiStatus.error);
       });
     } catch (e) {
       setError(e.toString());
       setStatus(ApiStatus.error);
     }
+  }
+
+  void changeAppSearchFieldVisibility(bool visibility) {
+    showAppSearchField.value = visibility;
   }
 }

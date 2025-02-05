@@ -15,14 +15,29 @@ class ApiServices extends BaseApiService {
     Map<String, String>? queryParams,
   ) async {
     try {
+      var queryArr = [];
+      if (queryParams != null) {
+        var keys = queryParams.keys.toList();
+        for (int i = 0; i < keys.length; i++) {
+          queryArr.add('${keys[i]}=${queryParams[keys[i]]}');
+        }
+      }
+
+      var queryString = '?${queryArr.join('&')}';
+
+      log(queryString);
+
       var uri =
-          Uri.https(ApiUrls.baseUrl, '${ApiUrls.version}$url/', queryParams);
-      log(uri.origin);
+          Uri.parse('${ApiUrls.baseUrl}${ApiUrls.version}$url$queryString');
+
+      log(uri.toString());
       final response = await http.get(uri).timeout(
             const Duration(seconds: 10),
           );
 
       var json = _checkResponse(response);
+
+      log(json.toString());
       return json;
     } on SocketException {
       throw InternetException();
